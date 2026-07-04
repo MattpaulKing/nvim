@@ -1,0 +1,16 @@
+require("sartre.set")
+require("sartre.remap")
+require("sartre.colours")
+require("sartre.lsp_config")
+require("sartre.treesitter")
+require("sartre.telescope")
+require("sartre.todos")
+require("sartre.harpoon")
+require("sartre.files")
+require("sartre.autotags")
+require("sartre.git")
+require("sartre.db")
+
+vim.pack.add({
+	"https://github.com/nvim-tree/nvim-web-devicons", -- icons (nerd font)
+})
