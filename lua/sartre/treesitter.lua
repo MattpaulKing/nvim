@@ -15,6 +15,7 @@ require("nvim-treesitter.config").setup({
 		"css",
 		"javascript",
 		"typescript",
+		"python",
 	},
 })
 

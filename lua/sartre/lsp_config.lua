@@ -53,13 +53,7 @@ local lsp_servers = {
   ts_ls = {},
   svelte = {},
   tailwindcss = {},
-  basedpyright = {
-    analysis = {
-      diagnosticMode = "openFilesOnly",
-      autoSearchPaths = true,
-      useLibraryCodeForTypes = true,
-    },
-  },
+  basedpyright = {},
 }
 
 vim.pack.add({
@@ -146,3 +140,5 @@ vim.api.nvim_create_autocmd("LspAttach", {
     end
   end,
 })
+
+vim.lsp.enable("ruff")
