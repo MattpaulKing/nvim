@@ -1,6 +1,7 @@
 require("sartre.set")
 require("sartre.remap")
 require("sartre.colours")
+require("sartre.blade_nav")
 require("sartre.lsp_config")
 require("sartre.treesitter")
 require("sartre.telescope")
@@ -13,3 +14,5 @@ require("sartre.db")
 vim.pack.add({
 	"https://github.com/nvim-tree/nvim-web-devicons", -- icons (nerd font)
 })
+vim.pack.add(require("sartre.specs"))
+require("sartre.laravel")

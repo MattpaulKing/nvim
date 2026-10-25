@@ -6,6 +6,7 @@ return {
 	root_markers = { "pyproject.toml", "ruff.toml", ".git" },
 	init_options = {
 		settings = {
+			organizeImports = true,
 			lineLength = 100,
 			lint = {
 				select = { "E", "F", "I" },

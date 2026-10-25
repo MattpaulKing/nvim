@@ -4,6 +4,10 @@
       "rev": "a62e1083a3cfe8b6b206e7d3d33a51091df25357",
       "src": "https://github.com/L3MON4D3/LuaSnip"
     },
+    "blade-nav.nvim": {
+      "rev": "909825e2cfa5171867f2109f7cedc5e3e5d60956",
+      "src": "https://github.com/RicardoRamirezR/blade-nav.nvim"
+    },
     "blink.cmp": {
       "rev": "a327b19a419347084074cce77f6cd074f54705ac",
       "src": "https://github.com/saghen/blink.cmp"
@@ -28,6 +32,10 @@
     "hiPairs": {
       "rev": "8272bf6979d0ee65a3fdbbb97eff3dda79b661b2",
       "src": "https://github.com/Yggdroot/hiPairs"
+    },
+    "laravel.nvim": {
+      "rev": "587db9f2f272d141ed8aa45b122828262d800d89",
+      "src": "https://github.com/adalessa/laravel.nvim"
     },
     "lazydev.nvim": {
       "rev": "ff2cbcba459b637ec3fd165a2be59b7bbaeedf0d",
@@ -64,6 +72,10 @@
     "nvim-lspconfig": {
       "rev": "bedca8b426b2fee0ccac596d167d71bbe971253f",
       "src": "https://github.com/neovim/nvim-lspconfig"
+    },
+    "nvim-nio": {
+      "rev": "edcc181a875301dd21840189aa2f2f9ad69fc172",
+      "src": "https://github.com/nvim-neotest/nvim-nio"
     },
     "nvim-notify": {
       "rev": "8701bece920b38ea289b457f902e2ad184131a5d",

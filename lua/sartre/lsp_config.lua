@@ -8,13 +8,22 @@ require("blink.cmp").setup({
     },
   },
   sources = {
-    default = { "lsp", "path", "snippets", "buffer" },
+    default = { "lsp", "blade-nav", "path", "snippets", "buffer" },
     per_filetype = {
       sql = { "snippets", "dadbod", "buffer" },
     },
     -- add vim-dadbod-completion to your completion providers
     providers = {
       dadbod = { name = "Dadbod", module = "vim_dadbod_completion.blink" },
+      laravel = {
+        name = "laravel",
+        module = "blink.compat.source",
+        score_offset = 95, -- show above lsp
+      },
+      ["blade-nav"] = {
+        name = "blade-nav",
+        module = "blade-nav.integrations.blink",
+      },
     },
   },
 
@@ -54,6 +63,18 @@ local lsp_servers = {
   svelte = {},
   tailwindcss = {},
   basedpyright = {},
+  intelephense = {},
+  html = {
+    filetypes = { "html", "blade" },
+    init_options = {
+      configurationSection = { "html", "css", "javascript" },
+      embeddedLanguages = {
+        css = true,
+        javascript = true,
+      },
+      provideFormatter = true,
+    },
+  },
 }
 
 vim.pack.add({
@@ -134,11 +155,82 @@ vim.api.nvim_create_autocmd("LspAttach", {
       vim.api.nvim_create_autocmd("BufWritePre", {
         buffer = args.buf,
         callback = function()
-          vim.lsp.buf.format({ bufnr = args.buf, id = client.id })
+          vim.lsp.buf.format({ bufnr = args.buf, id = client.id, async = false })
         end,
       })
     end
   end,
 })
 
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+-- Force snippet support capability so Intelephense populates completion lists
+capabilities.textDocument.completion.completionItem.snippetSupport = true
+
 vim.lsp.enable("ruff")
+
+vim.lsp.config("intelephense", {
+  cmd = { "intelephense", "--stdio" },
+  filetypes = { "php", "blade" },
+  root_markers = { "composer.json", ".git" },
+  settings = {
+    intelephense = {
+      environment = {
+        includePaths = { "app", "routes", "resources/views" },
+      },
+      files = {
+        associations = { "*.php", "*.blade.php" },
+        maxSize = 5000000,
+      },
+    },
+  },
+  capabilities = capabilities,
+  get_language_id = function(bufnr, filetype)
+    if filetype == "blade" then
+      return "php"
+    end
+    return filetype
+  end,
+  on_new_config = function(new_config, new_root_dir)
+    new_config.settings.intelephense.files.associations = { "*.php", "*.blade.php" }
+  end,
+  handlers = {
+    ["textDocument/publishDiagnostics"] = function(err, result, ctx, config)
+      -- Mask the URI/language dynamically so Intelephense processes it
+      local client = vim.lsp.get_client_by_id(ctx.client_id)
+      if client and client.name == "intelephense" then
+        -- This forces the server communication to map back smoothly
+        ctx.params = ctx.params or {}
+      end
+      vim.lsp.diagnostic.on_publish_diagnostics(err, result, ctx, config)
+    end,
+  },
+})
+
+vim.lsp.config("html", {
+  filetypes = { "html", "blade", "php" },
+  init_options = { provideFormatter = true },
+})
+
+vim.lsp.config("laravel_lsp", {
+  cmd = { "laravel-lsp" },
+  filetypes = { "php", "blade" },
+  root_dir = function(bufnr, on_dir)
+    local root = vim.fs.root(bufnr, "artisan")
+
+    if root then
+      on_dir(root)
+    end
+  end,
+})
+
+vim.lsp.enable("laravel_lsp")
+
+vim.api.nvim_create_autocmd("LspAttach", {
+  group = vim.api.nvim_create_augroup("lsp_native_completion", { clear = true }),
+  callback = function(args)
+    local client = vim.lsp.get_client_by_id(args.data.client_id)
+    if client and client:supports_method("textDocument/completion") then
+      vim.lsp.completion.enable(true, client.id, args.buf, { autotrigger = false })
+    end
+  end,
+})

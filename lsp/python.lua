@@ -12,41 +12,41 @@
 ---@type vim.lsp.Config
 
 return {
-	cmd = { "basedpyright-langserver", "--stdio" },
-	filetypes = { "python" },
-	settings = {
-		basedpyright = {
-			disableOrganizeImports = true, -- Let Ruff handle imports
-			analysis = {
-				autoSearchPaths = true,
-				typeCheckingMode = "recommended", -- Alternatives: "off", "basic", "strict"
-				diagnosticMode = "workspace",
-				useLibraryCodeForTypes = true,
-			},
-		},
-	},
-	root_markers = {
-		"pyrightconfig.json",
-		"pyproject.toml",
-		"setup.py",
-		"setup.cfg",
-		"requirements.txt",
-		"Pipfile",
-		".git",
-	},
-	on_attach = function(client, bufnr)
-		vim.api.nvim_create_autocmd("BufWritePre", {
-			pattern = "*.py",
-			callback = function(args)
-				vim.lsp.buf.format({
-					bufnr = args.buf,
-					-- This ensures only Ruff acts as the formatter instead of competing with Basedpyright
-					filter = function(client)
-						return client.name == "ruff"
-					end,
-					timeout_ms = 500,
-				})
-			end,
-		})
-	end,
+  cmd = { "basedpyright-langserver", "--stdio" },
+  filetypes = { "python" },
+  settings = {
+    basedpyright = {
+      disableOrganizeImports = true, -- Let Ruff handle imports
+      analysis = {
+        autoSearchPaths = true,
+        typeCheckingMode = "basic", -- Alternatives: "off", "basic", "strict"
+        diagnosticMode = "workspace",
+        useLibraryCodeForTypes = true,
+      },
+    },
+  },
+  root_markers = {
+    "pyrightconfig.json",
+    "pyproject.toml",
+    "setup.py",
+    "setup.cfg",
+    "requirements.txt",
+    "Pipfile",
+    ".git",
+  },
+  on_attach = function(client, bufnr)
+    vim.api.nvim_create_autocmd("BufWritePre", {
+      pattern = "*.py",
+      callback = function(args)
+        vim.lsp.buf.format({
+          bufnr = args.buf,
+          -- This ensures only Ruff acts as the formatter instead of competing with Basedpyright
+          filter = function(client)
+            return client.name == "ruff"
+          end,
+          timeout_ms = 500,
+        })
+      end,
+    })
+  end,
 }
